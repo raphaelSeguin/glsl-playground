@@ -1,5 +1,5 @@
 # glsl-playground
 
 ##Links
-* [glslEditor(https://github.com/patriciogonzalezvivo/glslEditor)
+* [glslEditor](https://github.com/patriciogonzalezvivo/glslEditor)
 * [shadertoy](https://www.shadertoy.com/)
