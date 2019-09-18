@@ -1,0 +1,52 @@
+float mtof(float m) {
+    return 440. * pow(2., (m-70.)/12.);
+}
+
+float seq(float t, float l, mat4x4 sequence) {
+    
+    t = mod(t, l); 
+    float steplength = l/16.;
+
+    int step = int(floor(t * 16. / l));
+    
+    float stepval = sequence[step/4][step%4];
+
+    return mtof(stepval + 60.);
+}
+
+float square(float t, float f) {
+	return floor(sin(6.2831*f*t)*5.)* 0.2;
+}
+
+vec2 mainSound( float time ) {
+    mat4x4 melo = mat4x4( -12., 3., 7.,10.,
+                          14., 12., 8., 7.,
+                          11., 0., -12., 0.,
+                          10., 12.,19., 7.);
+    
+    mat4x4 bass = mat4x4( -24., -12.,-24., -12.,
+                        -24., -12.,-24., -12.,
+                         -21., -9.,-21., -9.,
+                         -19., -7.,-19., -7.
+                        );
+    
+    mat4x4 bip = mat4x4( 31., 27., 26. ,24.,
+                        31., 27., 26. ,24.,
+                        31., 27., 26. ,24.,
+                        31., 27., 26. ,24.);
+    
+    float t1 = mod(time, 3.);
+    float kick = mod(time, 3./8.);
+    float t2 = mod(time, 3./16.);
+    float t3 = mod(time, 3./32.);
+    
+    float freq = seq(time, 3., melo);
+    float freqB = seq(time, 12., bass);
+    float freqBip = seq(time, 1.5, bip);
+    
+    float sound = square(time, freq)*exp(-10.0*t2);
+    sound += square(time, freqB);
+    sound += square(time, freqBip)*exp(-30.0*t3) * 0.5;
+    sound += clamp( sin( exp(-kick*15.) * 100. + 50.) * exp(-kick*.1) * 1., -.8, 0.8) * 1.5;
+    return vec2( sound * 0.3 );
+}
